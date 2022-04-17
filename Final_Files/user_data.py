@@ -73,8 +73,8 @@ gps_data_points_all = pd.DataFrame(gps_processing)
 Ld = []
 all_coordinates = (gps_data_points_all['longitude'].astype(str)+","+gps_data_points_all['latitude'].astype(str)).tolist()
 timestamps = gps_data_points_all['timestamp'].copy()
-# for tolerance in [50, 40, 30, 20, 10]:
-for tolerance in [50]:
+for tolerance in [50, 40, 30, 20, 10]:
+# for tolerance in [50]:
     # print(tolerance)
     # print(len(all_coordinates))
     for i in range(0, len(all_coordinates)-2, 2):
