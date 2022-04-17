@@ -7,6 +7,8 @@ class GpsData(db.Document):
     system_timestamp = db.FloatField()
     latitude = db.FloatField(required=True)
     longitude = db.FloatField(required=True)
+    map_matched_latitude = db.FloatField()
+    map_matched_longitude = db.FloatField()
     velocity = db.FloatField()
     acc = db.FloatField()
     bearing = db.FloatField()

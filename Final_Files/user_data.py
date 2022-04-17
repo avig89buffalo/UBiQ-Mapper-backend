@@ -73,13 +73,13 @@ gps_data_points_all = pd.DataFrame(gps_processing)
 Ld = []
 all_coordinates = (gps_data_points_all['longitude'].astype(str)+","+gps_data_points_all['latitude'].astype(str)).tolist()
 timestamps = gps_data_points_all['timestamp'].copy()
-for tolerance in [50, 40, 30, 20, 10]:
-# for tolerance in [50]:
+# for tolerance in [50, 40, 30, 20, 10]:
+for tolerance in [50]:
     # print(tolerance)
     # print(len(all_coordinates))
     for i in range(0, len(all_coordinates)-2, 2):
         if i%4000==0:
-            print('sleeping for 10 seconds')
+            print('waiting for 10 seconds')
             time.sleep(10)
     
         coordinate_str = ";".join(all_coordinates[i:i+2])
@@ -174,6 +174,9 @@ trip_nodes = []
 
 for gps in data['gps']:
     nearest_node_id = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['nearest_node_id']
+    map_matched_coordinate = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['trace_coordinates']
+    map_matched_longitude = map_matched_coordinate.values[0][0]
+    map_matched_latitude = map_matched_coordinate.values[0][1]
     nearest_node_id = nearest_node_id.values[0].item()
     trip_nodes.append(nearest_node_id)
     # print('Nearest node id', nearest_node_id,type(nearest_node_id))
@@ -183,6 +186,8 @@ for gps in data['gps']:
         'system_timestamp': gps['system_timestamp'],
         'latitude': gps['lat'],
         'longitude': gps['long'],
+        'map_matched_latitude': map_matched_latitude,
+        'map_matched_longitude': map_matched_longitude,
         'velocity': gps['velocity'],
         'acc': gps['acc'],
         'bearing': gps['bearing'],
