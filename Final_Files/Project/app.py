@@ -33,6 +33,10 @@ from controllers.c_parse_user_data import ParseUserData
 from controllers.c_nodeSegmentMapping import NodeSegmentMappingConroller
 from flask import Flask, request, Response
 from bson.objectid import ObjectId
+from frontend.controller.c_frontend import FrontendController
+from frontend.validators.v_frontend import FrontendValidator
+from werkzeug.exceptions import HTTPException
+from controllers.c_aggregationFramework import AggregationFrameworkController
 
 app = Flask(__name__)
 run_with_ngrok(app)
@@ -232,6 +236,23 @@ def nodeSegments():
     body = request.get_json()
     data = NodeSegmentMappingConroller.getNodeSegments(body)
     return jsonify(data), 201
+
+@app.route('/segments/getSegmentsWithTrips',methods=["GET"])
+def getallsegmentsdata():
+    return jsonify(AggregationFrameworkController.getAllSegmentsAsList()),200
+    
+@app.route('/segmentElevation/createSegmentElevations',methods=["POST"])
+def createSegmentElevations():
+    AggregationFrameworkController.insertSegmentElevations(request.get_json()['segment'])
+    return "Success",201
+
+@app.route('/segmentElevation/getSegmentElevationsForBoundingBox',methods=["POST"])
+def getSegmentElevationsForBoundingBox():
+    try:
+        lat1,lat2,long1,long2 = FrontendValidator.validate_bounding_box(request.get_json()['lat1'],request.get_json()['lat2'],request.get_json()['long1'],request.get_json()['long2'])
+    except HTTPException as e:
+        return 'Invalid Parameters',400
+    return jsonify(FrontendController.processSegmentElevations(lat1,long1,lat2,long2)),200
 
 if __name__=="__main__":
     app.run(debug=True)
