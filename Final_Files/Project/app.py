@@ -162,6 +162,12 @@ def addSegment():
     data = SegmentController.createSegment(body)
     return jsonify(data), 201
 
+@app.route('/segment/updateTrip', methods=["POST"])
+def updateSegments():
+    body = request.get_json()
+    data = SegmentController.updateSegments(body)
+    return jsonify(data), 201
+
 #Way API's
 @app.route('/way/getAll',methods=["GET"])
 def getAllWays():
