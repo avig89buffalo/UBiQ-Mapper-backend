@@ -17,7 +17,7 @@ class AggregationFrameworkController:
         global filteredPitchDict
         for segment in segments:
             segment_dict={}
-            segment_dict['id']=segments.id
+            segment_dict['segment_id']=segments.id
             gps_data=GpsController.getGPSDataForNearestNodes(segment.node_ids)
             anchorSnapshotsDict={}
             pitchRateFilteredDict={}
@@ -48,7 +48,6 @@ class AggregationFrameworkController:
             nodeDict['node_id']=node.node_id
             nodeDict['latitude']=node.location[0]
             nodeDict['longtitude']=node.location[1]
-            nodeDict['city']=node.city
             nodesList.append(nodeDict)
         return nodesList   
             
@@ -58,17 +57,17 @@ class AggregationFrameworkController:
     @staticmethod
     def convertAnchorSnapshotsObjectsToDict(objects):  
         for object in objects:
-            anchorSnapshotsDict[object.trip_id+object.timestamp]={'trip_id':object.trip_id,'timestamp':object.timestamp,'value':object.value}
+            anchorSnapshotsDict[object.trip_id+object.timestamp]={'timestamp':object.timestamp,'value':object.value}
 
     @staticmethod
     def convertPitchRateFilteredObjectsToDict(objects):  
         for object in objects:
-            pitchRateFilteredDict[object.trip_id+object.timestamp]={'trip_id':object.trip_id,'timestamp':object.timestamp,'value':object.value}
+            pitchRateFilteredDict[object.trip_id+object.timestamp]={'timestamp':object.timestamp,'value':object.value}
     
     @staticmethod
     def convertFilteredPitchObjectsToDict(objects):  
         for object in objects:
-            filteredPitchDict[object.trip_id+object.timestamp]={'trip_id':object.trip_id,'timestamp':object.timestamp,'value':object.value}
+            filteredPitchDict[object.trip_id+object.timestamp]={'timestamp':object.timestamp,'value':object.value}
         
         
     
@@ -86,7 +85,8 @@ class AggregationFrameworkController:
         gps_dict['acc']=gps.acc
         gps_dict['bearing']=gps.bearing
         gps_dict['bad_data']=gps.bad_data
-        gps_dict['nearest_node']={'node_id':nearest_node.node_id,'latitude':nearest_node.location[0],'longitude':nearest_node.location[1],'city':nearest_node.city}
+        gps_dict['nearest_node']={'node_id':nearest_node.node_id,'latitude':nearest_node.location[0],'longitude':nearest_node.location[1]}
+        gps_dict['city']=gps.city
         return gps_dict
     
     def insertSegmentElevations(data):
