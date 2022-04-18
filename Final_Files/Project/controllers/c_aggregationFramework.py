@@ -30,9 +30,9 @@ class AggregationFrameworkController:
                 AggregationFrameworkController.convertPitchRateFilteredObjectsToDict(PitchRateFilteredController.getPitchRateFilteredForTripIdAndSystemTime(gps.trip_id,max_sytem_timestamp,min_sytem_timestamp))
                 AggregationFrameworkController.convertFilteredPitchObjectsToDict(FilteredPitchController.getFilterPitchForTripIdAndSystemTime(gps.trip_id,max_sytem_timestamp,min_sytem_timestamp))
                 gps_list.append(AggregationFrameworkController.convertGpsToDict(gps,nearest_node))
-            segment_dict['anchor_snapshots']=anchorSnapshotsDict.values()
-            segment_dict['pitch_rate_filtered']=pitchRateFilteredDict.values()
-            segment_dict['filtered_pitch']=filteredPitchDict.values()
+            segment_dict['anchor_snapshots']=list(anchorSnapshotsDict.values())
+            segment_dict['pitch_rate_filtered']=list(pitchRateFilteredDict.values())
+            segment_dict['filtered_pitch']=list(filteredPitchDict.values())
             segment_dict['gps']=gps_list
             segment_dict['nodes']=AggregationFrameworkController.convertNodesToList(NodeController.getMultipleNodes(segment.node_ids))
             segment_list.append(segment_dict)
