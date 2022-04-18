@@ -1,7 +1,7 @@
 import json
 from controllers.c_segmentElevations import SegmentElevationsController
 
-class FrontendServices:
+class FrontendController:
     def processSegmentElevations(lat1,long1,lat2,long2):
         segment_ids_within_bounding_box=SegmentElevationsController.getAllSegmentsForBoundingBox(lat1,long1,lat2,long2)
         segment_elevation_list=[]
