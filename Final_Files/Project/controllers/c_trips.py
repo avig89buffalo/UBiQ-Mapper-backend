@@ -8,6 +8,5 @@ class TripController:
 
     def addTrips(body):
         trip_instace = [Trips(**data) for data in body]
-        print('trips done')
         return Trips.objects.insert(trip_instace)
 

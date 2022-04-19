@@ -39,7 +39,6 @@ from werkzeug.exceptions import HTTPException
 from controllers.c_aggregationFramework import AggregationFrameworkController
 
 app = Flask(__name__)
-run_with_ngrok(app)
 app.config['MONGODB_SETTINGS'] = {
     'db': Config.MONGODBNAME,
     'host': Config.MONGODBHOSTNAME,
@@ -131,23 +130,6 @@ def addTrips():
     body = request.get_json()
     data = TripController.addTrips(body)
     return jsonify(data), 201
-
-#RawSensorData API's
-# @app.route('/way/getAll',methods=["GET"])
-# def getAllSensorData():
-#     data = RawSensorDataController.getSpecificSensorData()
-#     return jsonify(data),200
-
-# @app.route('/way/<id>',methods=["GET"])
-# def getOneSensorData(id: ObjectId):
-#     data = RawSensorDataController.getSpecificSensorData()
-#     return jsonify(data), 200
-
-# @app.route('/way', methods=["POST"])
-# def addSensorData():
-#     body = request.get_json()
-#     data = RawSensorDataController.createSensorData(body)
-#     return jsonify(data), 201
 
 #Segments API's
 @app.route('/segment/getAll',)
