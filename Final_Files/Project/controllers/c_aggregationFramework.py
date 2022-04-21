@@ -10,7 +10,7 @@ from controllers.c_segmentElevations import SegmentElevationsController
 
 class AggregationFrameworkController:
     def getAllSegmentsAsList():
-        segments = SegmentController.getAllSegmentswithTripIds()
+        segments = SegmentController.getAllSegments()
         segment_list=[]
         global anchorSnapshotsDict
         global pitchRateFilteredDict
