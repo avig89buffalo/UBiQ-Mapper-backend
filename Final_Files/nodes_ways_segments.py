@@ -184,19 +184,36 @@ for col in main_df.columns: #.groupby('segment_id')['']
 main_df['node1_lat_lon'] = "(" + main_df['node1_lat'] +"," + main_df['node1_lon'] + ")"
 main_df['node2_lat_lon'] = "(" + main_df['node2_lat'] +"," + main_df['node2_lon'] + ")"
 
-# main_df.to_excel(f'data/Segment_wise_data_base_nohighway_query.xlsx',index=False)
+list1 = []
+current_seg = 'na'
+dict_temp = {'segment_id':'','lat_lon':[]}
+for row in main_df.itertuples():
+    # print(row)
+    if row.segment_id != current_seg:
+    
+        list1.append(dict_temp)
+        current_seg = row.segment_id
+        dict_temp = {'segment_id':row.segment_id,'nodes':[]}
+        if row.node1 not in dict_temp['nodes']:
+            dict_temp['nodes'].append(row.node1)
 
-main_df['node1'] = main_df['node1'].astype(str)
-main_df['node2'] = main_df['node2'].astype(str)
+        if row.node2 not in dict_temp['nodes']:
+            dict_temp['nodes'].append(row.node2)
+    else:
+        if row.node1_lat_lon not in dict_temp['nodes']:
+            dict_temp['nodes'].append(row.node1)
 
-temp1 = main_df.groupby('segment_id')['node1'].apply(lambda x: x.tolist()).reset_index()
-temp2 = main_df.groupby('segment_id')['node2'].apply(lambda x: x.tolist()).reset_index()
-final = pd.merge(temp1,temp2)
-final['all_nodes'] = final['node1'] + final['node2']
-final['all_nodes'] = final['all_nodes'].apply(lambda x: set(x))
-
-segments = final['all_nodes'].to_list()
+        if row.node2 not in dict_temp['nodes']:
+            dict_temp['nodes'].append(row.node2)
+        
+    # print(row.node2_lat_lon)
+list1.pop(0)
+    
+final = pd.DataFrame(list1)
+print(final.head())
+segments = final['nodes'].to_list()
 all_segments = []
+
 
 for seg in segments:
     # all_segments.append({'node_ids': list(seg), 'city': city})
