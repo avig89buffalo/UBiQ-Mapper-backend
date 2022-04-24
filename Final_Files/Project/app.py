@@ -77,8 +77,8 @@ def getAllNodes():
     return jsonify(data),200
 
 @app.route('/node/<id>')
-def getOneNode(id: ObjectId):
-    data = NodeController.getSpecificNode()
+def getOneNode(id):
+    data = NodeController.getSpecificNode(id)
     return jsonify(data), 200
 
 @app.route('/node', methods=["POST"])
@@ -121,8 +121,8 @@ def getAllTrips():
     return jsonify(data),200
 
 @app.route('/trip/<id>')
-def getOneTrip(id: ObjectId):
-    data = TripController.getSpecificTrip()
+def getOneTrip(id):
+    data = TripController.getSpecificTrip(id)
     return jsonify(data), 200
 
 @app.route('/trip', methods=["POST"])
@@ -138,8 +138,8 @@ def getAllSegments():
     return jsonify(data),200
 
 @app.route('/segment/<id>')
-def getOneSegment(id: ObjectId):
-    data = SegmentController.getSpecificSegment()
+def getOneSegment(id):
+    data = SegmentController.getSpecificSegment(id)
     return jsonify(data), 200
 
 @app.route('/segment', methods=["POST"])
@@ -161,8 +161,8 @@ def getAllWays():
     return jsonify(data),200
 
 @app.route('/way/<id>',methods=["GET"])
-def getOneWay(id: ObjectId):
-    data = WayController.getSpecificWay()
+def getOneWay(id):
+    data = WayController.getSpecificWay(id)
     return jsonify(data), 200
 
 @app.route('/way', methods=["POST"])
