@@ -1,6 +1,5 @@
 import flask
 from flask import Flask
-import config.development
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from flask_ngrok import run_with_ngrok
