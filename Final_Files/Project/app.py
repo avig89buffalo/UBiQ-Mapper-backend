@@ -2,7 +2,6 @@ import flask
 from flask import Flask
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
-from flask_ngrok import run_with_ngrok
 from flask import request, jsonify
 import json
 from bson.json_util import dumps
