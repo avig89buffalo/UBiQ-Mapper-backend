@@ -34,7 +34,7 @@ q_nodes = "http://0.0.0.0/api/interpreter?data=[out:json];(node({},{},{},{});<;)
 
 response_nodes = http.request("GET",q_nodes)
 print(response_nodes)
-result_nodes = json.load(response_nodes.read())
+result_nodes = json.loads(response_nodes)
 print("OSM data done")
 
 # with open('result_nodes.json', 'w') as f:
