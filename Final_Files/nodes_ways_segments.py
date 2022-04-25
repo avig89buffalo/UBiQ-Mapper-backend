@@ -10,7 +10,8 @@ import pickle
 import json
 import requests
 
-DB_CONFIG = 'http://127.0.0.1:5001'
+# DB_CONFIG = 'http://127.0.0.1:5001'
+WEB_CONFIG = 'http://127.0.0.1:8000'
 
 # api = overpy.Overpass()
 # (-78.8246377, 42.88402366, -78.72325793, 43.0139436)
@@ -78,9 +79,9 @@ print("before sending to DB")
 
 # Add to DB
 
-response = requests.post(DB_CONFIG+'/node', json = temp_nodes_list)
+response = requests.post(WEB_CONFIG+'/node', json = temp_nodes_list)
 print("node done", response)
-response = requests.post(DB_CONFIG+'/way', json = way_list)
+response = requests.post(WEB_CONFIG+'/way', json = way_list)
 print("way done", response)
 
 
@@ -221,7 +222,7 @@ for seg in segments:
 
 # print(all_segments)
 print("segment done")
-response = requests.post(DB_CONFIG+'/segment', json = all_segments)
+response = requests.post(WEB_CONFIG+'/segment', json = all_segments)
 print("Segment DB done", response)
 
 segments_data = response.json()
@@ -235,5 +236,5 @@ for seg in segments_data:
         update_nodes.append({'node_id': node, 'segment_id': segment_id})
 
 print("Before sending")
-response = requests.post(DB_CONFIG+'/nodeSegmentMapping', json = update_nodes)
+response = requests.post(WEB_CONFIG+'/nodeSegmentMapping', json = update_nodes)
 print("after updating")

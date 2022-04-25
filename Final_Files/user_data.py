@@ -3,7 +3,8 @@ import requests
 import pandas as pd
 import time 
 
-DB_CONFIG = 'http://127.0.0.1:5001'
+# DB_CONFIG = 'http://127.0.0.1:5001'
+WEB_CONFIG = 'http://127.0.0.1:8000'
 
 f = open('json_data.json')
 data = json.load(f)
@@ -161,7 +162,7 @@ print('all_map_matched_coordinates ', len(all_map_matched_coordinates))
 all_map_matched_coordinates.to_csv('del_temp.csv',index=False)
 
 def get_nearest_node(x):
-    response = requests.get(DB_CONFIG+'/node/userNearestNode', json = {"coordinate": [x[0],x[1]]})
+    response = requests.get(WEB_CONFIG+'/node/userNearestNode', json = {"coordinate": [x[0],x[1]]})
     # print(response.json())
     return response.json()['node_id']
 
@@ -195,7 +196,7 @@ for gps in data['gps']:
         'nearest_node': nearest_node_id
     })
     
-response = requests.get(DB_CONFIG+'/nodeSegments', json = {'node_ids': trip_nodes})
+response = requests.get(WEB_CONFIG+'/nodeSegments', json = {'node_ids': trip_nodes})
 segments = response.json()
 
 #add to db
@@ -206,8 +207,8 @@ trip_details = {
     'segment_ids': segments
     }
 
-response = requests.post(DB_CONFIG+'/gps', json = gps_data)
-response = requests.post(DB_CONFIG+'/filteredPitch', json = filtered_pitch_data)
-response = requests.post(DB_CONFIG+'/anchorSnapshots', json = anchor_snapshots_data)
-response = requests.post(DB_CONFIG+'/pitchRateFiltered', json = pitch_rate_filtered_data)
-response = requests.post(DB_CONFIG+'/trip', json = [trip_details])
+response = requests.post(WEB_CONFIG+'/gps', json = gps_data)
+response = requests.post(WEB_CONFIG+'/filteredPitch', json = filtered_pitch_data)
+response = requests.post(WEB_CONFIG+'/anchorSnapshots', json = anchor_snapshots_data)
+response = requests.post(WEB_CONFIG+'/pitchRateFiltered', json = pitch_rate_filtered_data)
+response = requests.post(WEB_CONFIG+'/trip', json = [trip_details])
