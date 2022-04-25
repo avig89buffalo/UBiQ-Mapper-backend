@@ -2,11 +2,11 @@ from .db import db,ObjectId
 import datetime
 
 class GpsData(db.Document):
-    trip_id = db.StringField(required=True)
+    trip_id = db.StringField(required=False)
     timestamp = db.FloatField()
     system_timestamp = db.FloatField()
-    latitude = db.FloatField(required=True)
-    longitude = db.FloatField(required=True)
+    latitude = db.FloatField(required=False)
+    longitude = db.FloatField(required=False)
     map_matched_latitude = db.FloatField()
     map_matched_longitude = db.FloatField()
     velocity = db.FloatField()

@@ -2,7 +2,7 @@ from .db import db,ObjectId
 from schemas.segments import Segments
 
 class Nodes(db.Document):
-    node_id = db.FloatField(required=True)
+    node_id = db.FloatField(required=False)
     # latitude = db.FloatField(required=True)
     # longitude = db.FloatField(required=True)
     location = db.PointField()

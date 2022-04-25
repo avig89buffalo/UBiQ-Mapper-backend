@@ -58,10 +58,10 @@ def initialize():
     Segments().save()
     Trips().save()
     Way().save()
-    GpsData.save()
-    FilteredPitchData.save()
-    AnchorSnapshotsData.save()
-    PitchRateFilteredData.save()
+    GpsData().save()
+    FilteredPitchData().save()
+    AnchorSnapshotsData().save()
+    PitchRateFilteredData().save()
     return 'Scehema initialized'
 
 #Parse User data
@@ -235,4 +235,4 @@ def getSegmentElevationsForBoundingBox():
     return jsonify(FrontendController.processSegmentElevations(lat1,long1,lat2,long2)),200
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0',port=8080)
