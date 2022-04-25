@@ -58,10 +58,10 @@ def initialize():
     Segments().save()
     Trips().save()
     Way().save()
-    GpsData.save()
-    FilteredPitchData.save()
-    AnchorSnapshotsData.save()
-    PitchRateFilteredData.save()
+    GpsData().save()
+    FilteredPitchData().save()
+    AnchorSnapshotsData().save()
+    PitchRateFilteredData().save()
     return 'Scehema initialized'
 
 #Parse User data
