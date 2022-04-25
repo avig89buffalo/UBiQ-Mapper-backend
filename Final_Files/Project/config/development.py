@@ -1,6 +1,6 @@
 class Config:
-    MONGODBURL='mongodb://localhost:27017/RoadGeometry'
+    MONGODBURL='mongodb://0.0.0.0:27017/RoadGeometry'
     MONGODBNAME='RoadGeometry'
-    MONGODBHOSTNAME='localhost'
+    MONGODBHOSTNAME='0.0.0.0'
     MONGODBPORT=27017
     USERDATAPATH = 'User_data/'
