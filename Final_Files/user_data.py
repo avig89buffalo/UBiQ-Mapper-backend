@@ -212,3 +212,4 @@ response = requests.post(WEB_CONFIG+'/filteredPitch', json = filtered_pitch_data
 response = requests.post(WEB_CONFIG+'/anchorSnapshots', json = anchor_snapshots_data)
 response = requests.post(WEB_CONFIG+'/pitchRateFiltered', json = pitch_rate_filtered_data)
 response = requests.post(WEB_CONFIG+'/trip', json = [trip_details])
+response = requests.post(WEB_CONFIG+'/segment/updateTrip', json= {'trip_id': data['path'], 'segments': segments})

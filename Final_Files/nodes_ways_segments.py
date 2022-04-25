@@ -1,4 +1,6 @@
 import pandas as pd
+import urllib.request
+import urllib3
 from urllib.request import urlopen
 import json
 import ast
@@ -26,11 +28,14 @@ city = 'Buffalo'
 
 way_list = []
 nodes_list = []
+http = urllib3.PoolManager()
 
-q_nodes = "http://localhost/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
+q_nodes = "http://0.0.0.0:443/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 
-response_nodes = urlopen(q_nodes)
-result_nodes = json.loads(response_nodes.read())
+response_nodes = http.request("GET",q_nodes)
+response_nodes = response_nodes.data.decode("utf-8")
+print(response_nodes)
+result_nodes = json.loads(response_nodes)
 print("OSM data done")
 
 # with open('result_nodes.json', 'w') as f:
