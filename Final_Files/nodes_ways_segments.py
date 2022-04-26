@@ -32,8 +32,10 @@ http = urllib3.PoolManager()
 
 q_nodes = "http://0.0.0.0:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 
-response_nodes = urlopen(q_nodes)
-result_nodes = json.loads(response_nodes.read())
+# response_nodes = urlopen(q_nodes)
+response_nodes = http.request("GET",q_nodes)
+response_nodes = response_nodes.data.decode("utf-8")
+result_nodes = json.loads(response_nodes)
 print("OSM data done")
 
 # with open('result_nodes.json', 'w') as f:
