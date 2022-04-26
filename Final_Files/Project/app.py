@@ -35,6 +35,7 @@ from frontend.controller.c_frontend import FrontendController
 from frontend.validators.v_frontend import FrontendValidator
 from werkzeug.exceptions import HTTPException
 from controllers.c_aggregationFramework import AggregationFrameworkController
+from bson import json_util
 
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
@@ -219,7 +220,7 @@ def nodeSegments():
 
 @app.route('/segments/getSegmentsWithTrips',methods=["GET"])
 def getallsegmentsdata():
-    return jsonify(AggregationFrameworkController.getAllSegmentsAsList()),200
+    return json_util.dumps(AggregationFrameworkController.getAllSegmentsAsList()),200
     
 @app.route('/segmentElevation/createSegmentElevations',methods=["POST"])
 def createSegmentElevations():

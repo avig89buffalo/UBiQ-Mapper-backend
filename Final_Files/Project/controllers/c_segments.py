@@ -20,3 +20,6 @@ class SegmentController:
             board.trip_ids.append(body['trip_id'])
             results.append(board.save())
         return results 
+
+    def getSegmentsWithTripIds():
+        return Segments.objects(trip_ids__0__exists=True)

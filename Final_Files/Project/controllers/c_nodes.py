@@ -3,7 +3,7 @@ class NodeController:
     # def updateNodes(id,lat,long):
     #     Nodes()
     def getSpecificNode(id):
-        return Nodes.objects(id=id).first()
+        return Nodes.objects(node_id=id).first()
 
     def getAllNodes():
         return Nodes.objects()
