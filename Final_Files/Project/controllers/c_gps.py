@@ -11,6 +11,6 @@ class GpsController:
         return gps_data
     
     def getMaxAndMinSystemTimestampForTripId(tripid):
-        max_sytem_timestamp=GpsData.objects(trip_id=tripid).order_by("-system_timestamp").limit(-1).first()
-        min_sytem_timestamp=GpsData.objects(trip_id=tripid).order_by("+system_timestamp").limit(-1).first()
-        return max_sytem_timestamp,min_sytem_timestamp
+        maxGpsObject=GpsData.objects(trip_id=tripid).order_by("-system_timestamp").limit(-1).first()
+        minGpsObject=GpsData.objects(trip_id=tripid).order_by("+system_timestamp").limit(-1).first()
+        return maxGpsObject.system_timestamp,minGpsObject.system_timestamp
