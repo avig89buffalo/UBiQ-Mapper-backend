@@ -1,3 +1,4 @@
+from dataclasses import field
 from schemas.segmentElevations import segmentElevations
 
 class SegmentElevationsController:
@@ -12,6 +13,6 @@ class SegmentElevationsController:
         return segmentElevations.objects(location__geo_within_box=[(latitude1, longitude1), (latitude2, longitude2)]).distinct(field="segment_id")
     
     def getSegmentElevationsForGivenSegmentIds(segment_ids):
-        raw_query = {'nearest_node': {'$in': segment_ids }}
+        raw_query = {'segment_id': {'$in': segment_ids }}
         return segmentElevations.objects(__raw__=raw_query)
 
