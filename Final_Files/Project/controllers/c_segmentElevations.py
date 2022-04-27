@@ -10,7 +10,7 @@ class SegmentElevationsController:
         segmentElevations.objects(segment_id=segmentId,location=[latitude,longitude]).update_one(set__distance=distance,set__elevation=elevation,upsert=True)
         
     def getAllSegmentsForBoundingBox(latitude1,latitude2,longitude1,longitude2):
-        return segmentElevations.objects(location__geo_within_box=[(latitude1, longitude1), (latitude2, longitude2)]).distinct(field='segment_id')
+        return segmentElevations.objects(location__geo_within_box=[(latitude1, longitude1), (latitude2, longitude2)]).distinct(field="segment_id")
     
     def getSegmentElevationsForGivenSegmentIds(segment_ids):
         raw_query = {'segment_id': {'$in': segment_ids }}
