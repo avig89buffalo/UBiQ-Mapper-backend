@@ -233,7 +233,7 @@ def getSegmentElevationsForBoundingBox():
         lat1,lat2,long1,long2 = FrontendValidator.validate_bounding_box(request.get_json()['lat1'],request.get_json()['lat2'],request.get_json()['long1'],request.get_json()['long2'])
     except HTTPException as e:
         return 'Invalid Parameters',400
-    return jsonify(FrontendController.processSegmentElevations(lat1,long1,lat2,long2)),200
+    return jsonify(FrontendController.processSegmentElevations(lat1,lat2,long1,long2)),200
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',port=8080)

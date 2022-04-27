@@ -11,7 +11,7 @@ class FrontendController:
             segment_list=[]
             for segmentElevation in segmentElevations:
                 if(int(segmentElevation.distance)==limit):
-                    segment_list.append([segmentElevation.location.coordinates[0],segmentElevation.location.coordinates[1],segmentElevation.elevation,segmentElevation.distance])
+                    segment_list.append([segmentElevation.location[0],segmentElevation.location[1],segmentElevation.elevation,segmentElevation.distance])
                     limit+=60
                     segment_elevation_list.append(segment_list)
                     segment_list=[]

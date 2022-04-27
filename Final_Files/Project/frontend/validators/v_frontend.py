@@ -15,21 +15,23 @@ class FrontendValidator:
     
     @staticmethod
     def check_lat(lat):
-        if(lat>=90 or lat<=-90):
-            raise Exception('Exceeded limits')
+        if(lat>90 or lat<-90):
+            print('error in lat')
+            raise HTTPException(400,'Invalid Parameters')
         
     @staticmethod
     def check_long(long):
-        if(long>=180 or long<=-180):
+        if(long>180 or long<-180):
+            print('error in long')
             raise HTTPException(400,'Invalid Parameters')
         
     @staticmethod
     def validate_bounding_box(lat1,lat2,long1,long2):
         try:
-            FrontendValidator.check_lat(int(lat1))
-            FrontendValidator.check_lat(int(lat2))
-            FrontendValidator.check_long(int(long1))
-            FrontendValidator.check_long(int(long2))
+            FrontendValidator.check_lat(float(lat1))
+            FrontendValidator.check_lat(float(lat2))
+            FrontendValidator.check_long(float(long1))
+            FrontendValidator.check_long(float(long2))
         except:
             raise HTTPException(400,'Invalid Parameters')
         return FrontendValidator.order_lat_and_long(lat1,lat2,long1,long2)
