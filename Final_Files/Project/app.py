@@ -89,6 +89,17 @@ def addNodes():
     data = NodeController.createNode(body)
     return jsonify(data), 201
 
+@app.route('/dbSaaf', methods=["DELETE"])
+def deleteNodes():
+    NodeController.deleteNodes()
+    AnchorSnapshotsController.deleteAnchorSnapshotsData()
+    FilteredPitchController.deleteFilteredPitchData()
+    SegmentController.deleteSegments()
+    GpsController.deleteGPSData()
+    WayController.deleteWays()
+    TripController.deleteTrips()
+    return 'Sab Saaf',200
+
 @app.route('/node/nearestNode', methods=["GET"])
 def getNearestNode():
     body = request.get_json()

@@ -16,3 +16,6 @@ class SegmentElevationsController:
         raw_query = {'segment_id': {'$in': segment_ids }}
         return segmentElevations.objects(__raw__=raw_query)
 
+    def deleteSegmentElevations():
+        return segmentElevations.objects.delete()
+

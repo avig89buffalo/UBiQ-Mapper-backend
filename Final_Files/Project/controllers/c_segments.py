@@ -12,6 +12,9 @@ class SegmentController:
         print(segment_instances)
         return Segments.objects.insert(segment_instances)
 
+    def deleteSegments():
+        return Segments.objects.delete()
+
     def updateSegments(body):
         objid = []
         results = []
