@@ -16,13 +16,11 @@ class FrontendValidator:
     @staticmethod
     def check_lat(lat):
         if(lat>90 or lat<-90):
-            print('error in lat')
             raise HTTPException(400,'Invalid Parameters')
         
     @staticmethod
     def check_long(long):
         if(long>180 or long<-180):
-            print('error in long')
             raise HTTPException(400,'Invalid Parameters')
         
     @staticmethod
