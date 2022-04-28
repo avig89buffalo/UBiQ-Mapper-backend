@@ -4,6 +4,8 @@ from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from flask import request, jsonify
 import json
+from flask_cors import CORS, cross_origin
+from flask_ngrok import run_with_ngrok
 from bson.json_util import dumps
 from flask_mongoengine import MongoEngine
 from config.development import Config
@@ -43,7 +45,8 @@ app.config['MONGODB_SETTINGS'] = {
     'host': Config.MONGODBHOSTNAME,
     'port':Config.MONGODBPORT
 }
-
+CORS(app, support_credentials=True)
+# run_with_ngrok(app)
 initialize_db(app)
 
 
@@ -85,6 +88,17 @@ def addNodes():
     body = request.get_json()
     data = NodeController.createNode(body)
     return jsonify(data), 201
+
+@app.route('/dbSaaf', methods=["DELETE"])
+def deleteNodes():
+    NodeController.deleteNodes()
+    AnchorSnapshotsController.deleteAnchorSnapshotsData()
+    FilteredPitchController.deleteFilteredPitchData()
+    SegmentController.deleteSegments()
+    GpsController.deleteGPSData()
+    WayController.deleteWays()
+    TripController.deleteTrips()
+    return 'Sab Saaf',200
 
 @app.route('/node/nearestNode', methods=["GET"])
 def getNearestNode():
@@ -233,7 +247,9 @@ def getSegmentElevationsForBoundingBox():
         lat1,lat2,long1,long2 = FrontendValidator.validate_bounding_box(request.get_json()['lat1'],request.get_json()['lat2'],request.get_json()['long1'],request.get_json()['long2'])
     except HTTPException as e:
         return 'Invalid Parameters',400
-    return jsonify(FrontendController.processSegmentElevations(lat1,lat2,long1,long2)),200
+
+    response = jsonify(FrontendController.processSegmentElevations(lat1,lat2,long1,long2))
+    return response,200
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',port=8080)

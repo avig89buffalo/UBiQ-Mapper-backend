@@ -12,6 +12,8 @@ class NodeController:
         node_instances = [Nodes(**data) for data in body]
         return Nodes.objects.insert(node_instances)
         
+    def deleteNodes():
+        return Nodes.objects.delete()
 
     def getNearestNode(lat_min,lat_max,long_min,long_max):
         raw_query = {'latitude': {'$gte': lat_min, '$lt': lat_max}, 

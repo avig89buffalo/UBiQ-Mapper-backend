@@ -10,3 +10,6 @@ class TripController:
         trip_instace = [Trips(**data) for data in body]
         return Trips.objects.insert(trip_instace)
 
+    def deleteTrips():
+        return TripController.objects.delete()
+
