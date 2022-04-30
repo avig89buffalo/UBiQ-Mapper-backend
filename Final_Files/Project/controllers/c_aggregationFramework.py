@@ -15,8 +15,6 @@ class AggregationFrameworkController:
         global pitchRateFilteredDict
         global filteredPitchDict
         for segment in segments:
-            segment_dict={}
-            segment_dict['segment_id']=str(segment.id)
             request_list = list(set((map(int,segment.node_ids))))
             gps_data=GpsController.getGPSDataForNearestNodes(request_list)
             anchorSnapshotsList=[]
