@@ -79,7 +79,6 @@ class AggregationFrameworkController:
     
     @staticmethod
     def convertGpsToDict(gps,nearest_node):
-        # print(gps.trip_id)
         gps_dict={}
         gps_dict['trip_id']=gps.trip_id
         gps_dict['timestamp']=gps.timestamp
