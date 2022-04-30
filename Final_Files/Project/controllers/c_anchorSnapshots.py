@@ -5,7 +5,7 @@ class AnchorSnapshotsController:
         return AnchorSnapshotsData.objects.insert(anchor_snapshots_instance)
     
     def getAnchorSnapshotsForTripIdAndSystemTime(tripid,max_sytem_timestamp,min_sytem_timestamp):
-        return AnchorSnapshotsData.objects(trip_id=tripid,timestamp__gte=min_sytem_timestamp,timestamp__lte=max_sytem_timestamp)
+        return list(AnchorSnapshotsData.objects(trip_id=tripid,timestamp__gte=min_sytem_timestamp,timestamp__lte=max_sytem_timestamp).as_pymongo())
 
     def deleteAnchorSnapshotsData():
         return AnchorSnapshotsData.objects.delete()
