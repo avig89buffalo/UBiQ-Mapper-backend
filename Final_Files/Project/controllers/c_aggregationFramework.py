@@ -11,13 +11,10 @@ import csv
 class AggregationFrameworkController:
     def getAllSegmentsAsList():
         segments = SegmentController.getSegmentsWithTripIds()
-        segment_list=[]
         global anchorSnapshotsDict
         global pitchRateFilteredDict
         global filteredPitchDict
-        count = 0
         for segment in segments:
-            count += 1
             segment_dict={}
             segment_dict['segment_id']=str(segment.id)
             request_list = list(set((map(int,segment.node_ids))))
@@ -26,7 +23,6 @@ class AggregationFrameworkController:
             pitchRateFilteredList=[]
             filteredPitchList=[]
             gps_list=[]
-            system_time = []
             results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(request_list)
             for result in results:
                 anchorSnapshotsList.extend(AnchorSnapshotsController.getAnchorSnapshotsForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']))
