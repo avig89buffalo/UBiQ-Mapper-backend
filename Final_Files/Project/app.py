@@ -234,12 +234,12 @@ def nodeSegments():
 
 @app.route('/segments/getSegmentsWithTrips',methods=["GET"])
 def getallsegmentsdata():
-    return json_util.dumps(AggregationFrameworkController.getAllSegmentsAsList()),200
+    return AggregationFrameworkController.getAllSegmentsAsList(),200
     
 @app.route('/segmentElevation/createSegmentElevations',methods=["POST"])
 def createSegmentElevations():
     AggregationFrameworkController.insertSegmentElevations(request.get_json()['segment'])
-    return "Success",201
+    return "Created",201
 
 @app.route('/segmentElevation/getSegmentElevationsForBoundingBox',methods=["POST"])
 def getSegmentElevationsForBoundingBox():
