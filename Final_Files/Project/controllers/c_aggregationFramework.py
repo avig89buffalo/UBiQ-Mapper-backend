@@ -9,6 +9,7 @@ from controllers.c_segmentElevations import SegmentElevationsController
 from collections import defaultdict
 import os
 import csv
+
 class AggregationFrameworkController:
     def getAllSegmentsAsList():
         segments = SegmentController.getSegmentsWithTripIds()
@@ -18,9 +19,6 @@ class AggregationFrameworkController:
         for segment in segments:
             request_list = list(set((map(int,segment.node_ids))))
             gps_data=GpsController.getGPSDataForNearestNodes(request_list)
-            anchorSnapshotsList=[]
-            pitchRateFilteredList=[]
-            filteredPitchList=[]
             gps_dict=defaultdict(list)
             results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(request_list)
             for result in results:
@@ -63,7 +61,6 @@ class AggregationFrameworkController:
             dict_writer.writeheader()
             dict_writer.writerows(value)
             file.close()
-
 
     def convertObjectsintoListofDict(objects):
         objectList=[]
