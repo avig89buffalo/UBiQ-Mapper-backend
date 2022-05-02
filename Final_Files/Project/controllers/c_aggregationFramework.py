@@ -6,8 +6,10 @@ from controllers.c_anchorSnapshots import AnchorSnapshotsController
 from controllers.c_pitchRateFiltered import PitchRateFilteredController
 from controllers.c_filteredPitch import FilteredPitchController
 from controllers.c_segmentElevations import SegmentElevationsController
+from collections import defaultdict
 import os
 import csv
+
 class AggregationFrameworkController:
     def getAllSegmentsAsList():
         segments = SegmentController.getSegmentsWithTripIds()
@@ -17,33 +19,31 @@ class AggregationFrameworkController:
         for segment in segments:
             request_list = list(set((map(int,segment.node_ids))))
             gps_data=GpsController.getGPSDataForNearestNodes(request_list)
-            anchorSnapshotsList=[]
-            pitchRateFilteredList=[]
-            filteredPitchList=[]
-            gps_list=[]
+            gps_dict=defaultdict(list)
             results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(request_list)
             for result in results:
-                anchorSnapshotsList.extend(AnchorSnapshotsController.getAnchorSnapshotsForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']))
-                pitchRateFilteredList.extend(PitchRateFilteredController.getPitchRateFilteredForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']))
-                filteredPitchList.extend(FilteredPitchController.getFilterPitchForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']))
+                AggregationFrameworkController.writeCSVFile(str(segment.id),"anchor_snapshots",AnchorSnapshotsController.getAnchorSnapshotsForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']),result['trip_id'])
+                AggregationFrameworkController.writeCSVFile(str(segment.id),"pitch_rate_filtered",PitchRateFilteredController.getPitchRateFilteredForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']),result['trip_id'])
+                AggregationFrameworkController.writeCSVFile(str(segment.id),"filtered_pitch",FilteredPitchController.getFilterPitchForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']),result['trip_id'])
             for gps in gps_data:
                 nearest_node=NodeController.getSpecificNode(gps.nearest_node)
-                gps_list.append(AggregationFrameworkController.convertGpsToDict(gps,nearest_node))
-            AggregationFrameworkController.writeCSVFile(str(segment.id),"anchor_snapshots",anchorSnapshotsList)
-            AggregationFrameworkController.writeCSVFile(str(segment.id),"pitch_rate_filtered",pitchRateFilteredList)
-            AggregationFrameworkController.writeCSVFile(str(segment.id),"filtered_pitch",filteredPitchList)
-            AggregationFrameworkController.writeCSVFile(str(segment.id),"gps",gps_list)
+                gps_dict[gps.trip_id].append(AggregationFrameworkController.convertGpsToDict(gps,nearest_node))
+            AggregationFrameworkController.writeGPSCSVFile(str(segment.id),gps_dict)
             AggregationFrameworkController.writeCSVFile(str(segment.id),"nodes",AggregationFrameworkController.convertNodesToList(NodeController.getMultipleNodes(request_list))) 
         return 'Files created'
     
     
-    def writeCSVFile(segmentid,type,data):
+    def writeCSVFile(segmentid,type,data,tripid=None):
         if data: 
             if isinstance(data,list):
                 keys=data[0].keys()
             elif isinstance(data,dict):
                 keys=data.keys()
-            filename='/output_files/'+segmentid +'/'+type+'.csv'
+            global filename
+            if tripid:
+                filename='/output_files/'+segmentid +'/'+str(tripid)+'/'+type+'.csv'
+            else:
+                filename='/output_files/'+segmentid +'/'+'/'+type+'.csv'
             os.makedirs(os.path.dirname(filename), exist_ok=True)
             file = open(filename, "w",newline='', encoding='utf-8')
             dict_writer = csv.DictWriter(file, keys)
@@ -51,6 +51,16 @@ class AggregationFrameworkController:
             dict_writer.writerows(data)
             file.close()
 
+    def writeGPSCSVFile(segmentid,gps_dict):
+        for key,value in gps_dict.items():
+            csv_keys=value[0].keys()
+            filename='/output_files/'+segmentid +'/'+str(key)+'/gps.csv'
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+            file = open(filename, "w",newline='', encoding='utf-8')
+            dict_writer = csv.DictWriter(file, csv_keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(value)
+            file.close()
 
     def convertObjectsintoListofDict(objects):
         objectList=[]
