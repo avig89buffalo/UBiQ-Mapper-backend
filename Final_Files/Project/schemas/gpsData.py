@@ -15,3 +15,4 @@ class GpsData(db.Document):
     bad_data = db.FloatField()
     city = db.StringField(required=False)
     nearest_node = db.FloatField()
+    segment_id = db.StringField(required=False)

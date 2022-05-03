@@ -106,7 +106,18 @@ def getNearestNode():
     data = NodeController.getNearestNode(body['lat_min'],body['lat_max'],body['long_min'],body['long_max'])
     return jsonify(data), 201
 
+@app.route('/node/intersectingNodes', methods=["POST"])
+def updateIntersectingNodes():
+    body = request.get_json()
+    data = NodeController.updateIntersectingNodes(body)
+    return jsonify(data), 201
 
+@app.route('/node/getIntersectingNodes', methods=["GET"])
+def getIntersectingNodes():
+    body = request.get_json()
+    data = NodeController.getIntersectingNodes(body['node_ids'])
+    return jsonify(data), 201
+    
 @app.route('/node/getMultipleNodes', methods=["GET"])
 def getMultipleNodes():
     body = request.get_json()

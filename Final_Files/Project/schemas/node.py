@@ -8,3 +8,4 @@ class Nodes(db.Document):
     location = db.PointField()
     city = db.StringField(required=False)
     segment_id = db.StringField(required=False)
+    intersecting_node = db.BooleanField(required=False, default = False)

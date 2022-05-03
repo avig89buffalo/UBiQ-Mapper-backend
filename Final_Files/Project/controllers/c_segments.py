@@ -25,5 +25,5 @@ class SegmentController:
         return results 
 
     def getSegmentsWithTripIds():
-        raw_query = { trip_ids: { $ne: [] } }
+        raw_query = { 'trip_ids': { '$ne': [] } }
         return Segments.objects(__raw__=raw_query)

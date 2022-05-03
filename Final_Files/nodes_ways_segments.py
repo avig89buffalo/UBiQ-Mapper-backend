@@ -31,6 +31,7 @@ nodes_list = []
 http = urllib3.PoolManager()
 
 q_nodes = "http://172.17.0.2/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
+# q_nodes = "http://127.0.0.1:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 
 response_nodes = urlopen(q_nodes)
 result_nodes = json.loads(response_nodes.read())
@@ -96,7 +97,7 @@ print("way done", response)
 nodes = pd.DataFrame(nodes_list)
 # print(nodes.head())
 ways = pd.DataFrame(way_list)
-# nodes.set_index('node_id',inplace=True)
+nodes.set_index('node_id',inplace=True)
 # ways['nodes'] = ways['nodes'].apply(lambda x: ast.literal_eval(x))
 nodes = nodes.drop_duplicates()
 
@@ -121,6 +122,14 @@ all_intersections = {}
 for element in counter:
     if counter[element] > 1:
         all_intersections[element] = 0
+
+intersection_nodes = []
+for key in all_intersections.keys():
+    intersection_nodes.append(int(key))
+
+
+response_intersection = requests.post(WEB_CONFIG+'/node/intersectingNodes', json = {'node_ids': intersection_nodes})
+print("way done", response_intersection)
 
 segment_tracker = 0
 for nodes_counter in range(len(ways)):

@@ -45,3 +45,16 @@ class NodeController:
                                      "$minDistance": 1}}}
         node = Nodes.objects(__raw__=raw_query)
         return node[0]
+
+    def updateIntersectingNodes(body):
+        node_ids = body['node_ids']
+        print('Inside updateIntersectingNodes ',node_ids)
+        node_ids = {'node_id': {'$in': node_ids }}
+        nodes = Nodes.objects(__raw__=node_ids).update(intersecting_node = True)
+        return nodes
+    
+    def getIntersectingNodes(ids):
+        raw_query = {'node_id': {'$in': ids },
+                        'intersecting_node': True}
+        nodes = Nodes.objects(__raw__=raw_query)
+        return nodes
