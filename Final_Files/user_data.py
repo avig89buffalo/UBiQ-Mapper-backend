@@ -19,7 +19,7 @@ def get_flag(x):
         else:
             return False
 
-for file in glob.glob(r"user_data_dump\*.json")[:2]:
+for file in glob.glob(r"preprocessedfiles\*.json")[:2]:
     print('Processing File Name ', file)
     f = open(file)
     data = json.load(f)
