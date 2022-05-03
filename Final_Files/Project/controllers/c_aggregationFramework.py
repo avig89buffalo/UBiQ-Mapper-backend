@@ -41,9 +41,9 @@ class AggregationFrameworkController:
                 keys=data.keys()
             global filename
             if tripid:
-                filename='/output_files/'+segmentid +'/'+str(tripid)+'/'+type+'.csv'
+                filename='../output_files/'+segmentid +'/'+str(tripid)+'/'+type+'.csv'
             else:
-                filename='/output_files/'+segmentid +'/'+'/'+type+'.csv'
+                filename='../output_files/'+segmentid +'/'+'/'+type+'.csv'
             os.makedirs(os.path.dirname(filename), exist_ok=True)
             file = open(filename, "w",newline='', encoding='utf-8')
             dict_writer = csv.DictWriter(file, keys)
@@ -54,7 +54,7 @@ class AggregationFrameworkController:
     def writeGPSCSVFile(segmentid,gps_dict):
         for key,value in gps_dict.items():
             csv_keys=value[0].keys()
-            filename='/output_files/'+segmentid +'/'+str(key)+'/gps.csv'
+            filename='../output_files/'+segmentid +'/'+str(key)+'/gps.csv'
             os.makedirs(os.path.dirname(filename), exist_ok=True)
             file = open(filename, "w",newline='', encoding='utf-8')
             dict_writer = csv.DictWriter(file, csv_keys)
