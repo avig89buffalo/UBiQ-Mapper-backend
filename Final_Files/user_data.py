@@ -258,6 +258,7 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:2]:
         map_matched_latitude = map_matched_coordinate.values[0][1]
         nearest_node_id = nearest_node_id.values[0].item()
         trip_nodes.append(nearest_node_id)
+        segment_id = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['temp_segment_id'].values[0]
         # print('Nearest node id', nearest_node_id,type(nearest_node_id))
         gps_data.append({
             'trip_id': data['path'],
@@ -271,7 +272,8 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:2]:
             'acc': gps['acc'],
             'bearing': gps['bearing'],
             'bad_data': gps['bad_data'],
-            'nearest_node': nearest_node_id
+            'nearest_node': nearest_node_id,
+            'segment_id':segment_id
         })
         
     response = requests.get(WEB_CONFIG+'/nodeSegments', json = {'node_ids': trip_nodes})
