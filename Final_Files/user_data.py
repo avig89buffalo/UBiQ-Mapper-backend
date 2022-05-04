@@ -5,7 +5,7 @@ import time
 import glob
 from collections import Counter
 # DB_CONFIG = 'http://127.0.0.1:5001'
-WEB_CONFIG = 'http://127.0.0.1:5001'
+WEB_CONFIG = 'http://127.0.0.1:5002'
 
 def get_nearest_node(x):
     # print("from get nearest node (x) : ", x)

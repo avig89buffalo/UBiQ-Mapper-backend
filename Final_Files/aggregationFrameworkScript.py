@@ -9,7 +9,7 @@ from geopy.distance import geodesic
 import requests
 
 #import constants
-WEB_CONFIG = 'http://127.0.0.1:5001'
+WEB_CONFIG = 'http://127.0.0.1:5002'
 debug = True
 
 def process_seg_gps(segment_id,df_gps, df_osm):

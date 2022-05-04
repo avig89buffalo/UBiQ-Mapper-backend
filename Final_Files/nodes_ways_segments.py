@@ -13,7 +13,7 @@ import json
 import requests
 
 # DB_CONFIG = 'http://127.0.0.1:5001'
-WEB_CONFIG = 'http://127.0.0.1:5001'
+WEB_CONFIG = 'http://127.0.0.1:5002'
 
 # api = overpy.Overpass()
 # (-78.8246377, 42.88402366, -78.72325793, 43.0139436)
