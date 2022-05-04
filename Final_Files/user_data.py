@@ -294,3 +294,4 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
     response = requests.post(WEB_CONFIG+'/trip', json = [trip_details])
     # print({'trip_id': data['path'], 'segments': segments})
     response = requests.post(WEB_CONFIG+'/segment/updateTrip', json= {'trip_id': data['path'], 'segments': segments})
+    response = reques.get(WEB_CONFIG+'/segments/getSegmentsWithTrips')
