@@ -30,7 +30,7 @@ way_list = []
 nodes_list = []
 http = urllib3.PoolManager()
 
-q_nodes = "http://172.17.0.2:81/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
+q_nodes = "http://172.17.0.1/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 # q_nodes = "http://127.0.0.1:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 
 response_nodes = urlopen(q_nodes)
