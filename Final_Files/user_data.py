@@ -103,7 +103,7 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
             radius = ['{}'.format(tolerance)]
             radius_str = ';'.join(radius*len(coordinate_str.split(';')))
             service_url = '/match/v1/driving/{}'.format(coordinate_str)
-            request_url = "http://127.0.0.1:5000" + service_url
+            request_url = "http://172.17.0.3" + service_url
             payload = {'geometries': 'geojson', 'steps': 'false', 'radiuses': radius_str}
 
             r = requests.get(request_url, params=payload)
