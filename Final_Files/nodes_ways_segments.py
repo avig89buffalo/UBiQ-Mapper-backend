@@ -39,7 +39,7 @@ print("OSM data done")
 
 # with open('result_nodes.json', 'w') as f:
 #     json.dump(result_nodes, f)
-
+print(result_nodes)
 # types_of_roads = "motorway trunk primary secondary tertiary unclassified residential service motorway_link trunk_link primary_link secondary_link motorway_junction".split()
 types_of_roads = "motorway trunk primary secondary tertiary residential service motorway_link trunk_link primary_link secondary_link motorway_junction".split()
 
@@ -83,7 +83,6 @@ print("before sending to DB")
 
 # Add to DB
 
-print(temp_nodes_list)
 response = requests.post(WEB_CONFIG+'/node', json = temp_nodes_list)
 print("node done", response)
 response = requests.post(WEB_CONFIG+'/way', json = way_list)
