@@ -83,6 +83,7 @@ print("before sending to DB")
 
 # Add to DB
 
+print(temp_nodes_list)
 response = requests.post(WEB_CONFIG+'/node', json = temp_nodes_list)
 print("node done", response)
 response = requests.post(WEB_CONFIG+'/way', json = way_list)
