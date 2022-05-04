@@ -8,6 +8,10 @@ class SegmentElevationsController:
     
     def createOrUpdateSegmentElevation(segmentId,latitude,longitude,distance,elevation):
         segmentElevations.objects(segment_id=segmentId,location=[latitude,longitude]).update_one(set__distance=distance,set__elevation=elevation,upsert=True)
+
+    def createOrUpdateSegmentElevationForAggregation(body):
+        
+        segmentElevations.objects.insert(segmentElevations(segment_id=body['segment_id'],location=[body['latitude'],body['longitude']],distance=body['distance'],elevation=body['elevation']))
         
     def getAllSegmentsForBoundingBox(latitude1,latitude2,longitude1,longitude2):
         return segmentElevations.objects(location__geo_within_box=[(latitude1, longitude1), (latitude2, longitude2)]).distinct(field="segment_id")

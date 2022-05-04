@@ -13,7 +13,7 @@ import json
 import requests
 
 # DB_CONFIG = 'http://127.0.0.1:5001'
-WEB_CONFIG = 'http://127.0.0.1:8000'
+WEB_CONFIG = 'http://127.0.0.1:5001'
 
 # api = overpy.Overpass()
 # (-78.8246377, 42.88402366, -78.72325793, 43.0139436)
@@ -30,8 +30,8 @@ way_list = []
 nodes_list = []
 http = urllib3.PoolManager()
 
-q_nodes = "http://172.17.0.2/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
-# q_nodes = "http://127.0.0.1:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
+# q_nodes = "http://172.17.0.2/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
+q_nodes = "http://127.0.0.1:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 
 response_nodes = urlopen(q_nodes)
 result_nodes = json.loads(response_nodes.read())
@@ -118,6 +118,7 @@ list_of_all_lists = lil_matrix((total_nodes,total_nodes))
 # Lets get all the intersections            
 counter = Counter(all_nodes_d)
 
+# 
 all_intersections = {}
 for element in counter:
     if counter[element] > 1:
@@ -206,14 +207,16 @@ for row in main_df.itertuples():
     
         list1.append(dict_temp)
         current_seg = row.segment_id
+        
         dict_temp = {'segment_id':row.segment_id,'nodes':[]}
+
         if row.node1 not in dict_temp['nodes']:
             dict_temp['nodes'].append(row.node1)
 
         if row.node2 not in dict_temp['nodes']:
             dict_temp['nodes'].append(row.node2)
     else:
-        if row.node1_lat_lon not in dict_temp['nodes']:
+        if row.node1 not in dict_temp['nodes']:
             dict_temp['nodes'].append(row.node1)
 
         if row.node2 not in dict_temp['nodes']:
@@ -223,6 +226,8 @@ for row in main_df.itertuples():
 list1.pop(0)
     
 final = pd.DataFrame(list1)
+# final.to_excel('segments.xlsx',index=False)
+# exit()
 print(final.head())
 segments = final['nodes'].to_list()
 all_segments = []

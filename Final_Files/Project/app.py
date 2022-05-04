@@ -31,6 +31,7 @@ from controllers.c_anchorSnapshots import AnchorSnapshotsController
 from controllers.c_pitchRateFiltered import PitchRateFilteredController
 from controllers.c_parse_user_data import ParseUserData
 from controllers.c_nodeSegmentMapping import NodeSegmentMappingConroller
+from controllers.c_segmentElevations import SegmentElevationsController
 from flask import Flask, request, Response
 from bson.objectid import ObjectId
 from frontend.controller.c_frontend import FrontendController
@@ -250,6 +251,11 @@ def getallsegmentsdata():
 @app.route('/segmentElevation/createSegmentElevations',methods=["POST"])
 def createSegmentElevations():
     AggregationFrameworkController.insertSegmentElevations(request.get_json()['segment'])
+    return "Created",201
+
+@app.route('/segmentElevation/createSegmentElevationsFromAggregation',methods=["POST"])
+def createSegmentElevationsAggregation():
+    SegmentElevationsController.createOrUpdateSegmentElevationForAggregation(request.get_json())
     return "Created",201
 
 @app.route('/segmentElevation/getSegmentElevationsForBoundingBox',methods=["POST"])

@@ -11,5 +11,5 @@ class TripController:
         return Trips.objects.insert(trip_instace)
 
     def deleteTrips():
-        return TripController.objects.delete()
+        return Trips.objects.delete()
 

@@ -12,6 +12,9 @@ class GpsController:
         gps_data = GpsData.objects(__raw__=raw_query)
         return gps_data
 
+    def getGPSDataForSegmentId(segment_id):
+        return GpsData.objects(segment_id=segment_id)
+
     def getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(nodeList):
         pipeline = [{
             '$match': {

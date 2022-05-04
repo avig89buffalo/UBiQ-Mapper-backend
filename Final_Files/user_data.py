@@ -5,7 +5,7 @@ import time
 import glob
 from collections import Counter
 # DB_CONFIG = 'http://127.0.0.1:5001'
-WEB_CONFIG = 'http://127.0.0.1:8000'
+WEB_CONFIG = 'http://127.0.0.1:5001'
 
 def get_nearest_node(x):
     # print("from get nearest node (x) : ", x)
@@ -19,7 +19,7 @@ def get_flag(x):
         else:
             return False
 
-for file in glob.glob(r"preprocessedfiles\*.json")[:2]:
+for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
     print('Processing File Name ', file)
     f = open(file)
     data = json.load(f)

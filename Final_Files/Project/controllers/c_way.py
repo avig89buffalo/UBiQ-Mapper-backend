@@ -14,4 +14,4 @@ class WayController:
         return Way.objects(city=city).only('node_ids')
 
     def deleteWays():
-        return WayController.objects.delete()
+        return Way.objects.delete()
