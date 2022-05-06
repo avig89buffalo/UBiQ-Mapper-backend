@@ -34,8 +34,6 @@ class AggregationFrameworkController:
     
     
     def writeCSVFile(segmentid,type,data,tripid=None):
-        if type=='nodes':
-            print(data)
         if data: 
             if isinstance(data,list):
                 keys=data[0].keys()
