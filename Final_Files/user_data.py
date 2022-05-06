@@ -250,7 +250,7 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
     # exit()
 
     trip_nodes = []
-
+    segments = []
     for gps in data['gps']:
         nearest_node_id = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['nearest_node_id']
         map_matched_coordinate = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['trace_coordinates']
@@ -259,6 +259,8 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
         nearest_node_id = nearest_node_id.values[0].item()
         trip_nodes.append(nearest_node_id)
         segment_id = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['temp_segment_id'].values[0]
+        if segment_id not in segments and segment_id != "":
+            segments.append(segment_id)
         # print('Nearest node id', nearest_node_id,type(nearest_node_id))
         gps_data.append({
             'trip_id': data['path'],
@@ -276,8 +278,10 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
             'segment_id':segment_id
         })
         
-    response = requests.get(WEB_CONFIG+'/nodeSegments', json = {'node_ids': trip_nodes})
-    segments = response.json()
+    # response = requests.get(WEB_CONFIG+'/nodeSegments', json = {'node_ids': trip_nodes})
+    # segments = response.json()
+
+    
 
     #add to db
     trip_details = {
@@ -294,4 +298,5 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
     response = requests.post(WEB_CONFIG+'/trip', json = [trip_details])
     # print({'trip_id': data['path'], 'segments': segments})
     response = requests.post(WEB_CONFIG+'/segment/updateTrip', json= {'trip_id': data['path'], 'segments': segments})
-    response = reques.get(WEB_CONFIG+'/segments/getSegmentsWithTrips')
+    print('Sending final final data to server')
+    response = requests.get(WEB_CONFIG+'/segments/getSegmentsWithTrips')

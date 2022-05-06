@@ -1,4 +1,6 @@
+from git import Object
 from schemas.gpsData import GpsData
+from bson.objectid import ObjectId
 
 
 class GpsController:
@@ -12,8 +14,10 @@ class GpsController:
         gps_data = GpsData.objects(__raw__=raw_query)
         return gps_data
 
-    def getGPSDataForSegmentId(segment_id):
-        return GpsData.objects(segment_id=segment_id)
+    def getGPSDataForSegmentId(id):
+        # print("inside getGPSDataForSegmentId: ", segment_id)
+        # temp =  GpsData.objects(segment_id=segment_id)
+        return GpsData.objects(segment_id=str(id))
 
     def getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(nodeList):
         pipeline = [{
