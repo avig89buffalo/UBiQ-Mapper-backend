@@ -17,8 +17,12 @@ class AggregationFrameworkController:
         global pitchRateFilteredDict
         global filteredPitchDict
         for segment in segments:
+            # print("segment.node_ids: ",segment.node_ids)
+            # exit()
             node_list = [int(i) for i in segment.node_ids]
             node_list= list(dict.fromkeys(node_list))
+            # print("node_list: ", node_list)
+            # exit()
             gps_data=GpsController.getGPSDataForSegmentId(segment.id)
             gps_dict=defaultdict(list)
             results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(node_list)
@@ -31,8 +35,11 @@ class AggregationFrameworkController:
                 gps_dict[gps.trip_id].append(AggregationFrameworkController.convertGpsToDict(gps,nearest_node))
             AggregationFrameworkController.writeGPSCSVFile(str(segment.id),gps_dict)
             AggregationFrameworkController.writeCSVFile(str(segment.id),"nodes",AggregationFrameworkController.convertNodesToList(NodeController.getMultipleNodes(node_list))) 
+            # print('NodeController.getMultipleNodes(node_list): ',NodeController.getMultipleNodes(node_list))
+            # exit()
         return 'Files created'
-    
+
+
     
     def writeCSVFile(segmentid,type,data,tripid=None):
         if data: 
@@ -41,6 +48,7 @@ class AggregationFrameworkController:
             elif isinstance(data,dict):
                 keys=data.keys()
             global filename
+            
             if tripid:
                 filename='../output_files/'+segmentid +'/'+str(tripid)+'/'+type+'.csv'
             else:
@@ -51,6 +59,8 @@ class AggregationFrameworkController:
             dict_writer.writeheader()
             dict_writer.writerows(data)
             file.close()
+            
+
 
     def writeGPSCSVFile(segmentid,gps_dict):
         for key,value in gps_dict.items():
@@ -74,12 +84,17 @@ class AggregationFrameworkController:
     @staticmethod
     def convertNodesToList(nodes):
         nodesList=[]
+        # print('nodes: ',nodes)
+        visited_nodes = []
         for node in nodes:
-            nodeDict={}
-            nodeDict['node_id']=node['node_id']
-            nodeDict['latitude']=node['location']['coordinates'][0]
-            nodeDict['longtitude']=node['location']['coordinates'][1]
-            nodesList.append(nodeDict)
+            if node['node_id'] not in visited_nodes:
+                visited_nodes.append(node['node_id'])
+                nodeDict={}
+                nodeDict['node_id']=node['node_id']
+                nodeDict['latitude']=node['location']['coordinates'][0]
+                nodeDict['longtitude']=node['location']['coordinates'][1]
+                nodesList.append(nodeDict)
+                # print("nodeDict: ", nodeDict)
         return nodesList   
     
     @staticmethod
