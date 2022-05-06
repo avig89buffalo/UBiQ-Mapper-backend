@@ -22,9 +22,10 @@ class NodeController:
         return nodes
 
     def getMultipleNodes(ids):
-        raw_query = {'node_id': {'$in': ids }}
-        nodes = Nodes.objects(__raw__=raw_query)
-        return nodes
+        pipeline = [{'$match': {'node_id': {'$in': ids}}}, 
+                    {'$addFields': {'__ids': {'$indexOfArray': [ids, '$node_id']}}}, 
+                    {'$sort': {'__ids': 1}}]
+        return Nodes._get_collection().aggregate(pipeline)
         
     def updateNodeSegment(body):
         node_ids = [x['node_id'] for x in body]

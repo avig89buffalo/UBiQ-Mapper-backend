@@ -17,10 +17,10 @@ class AggregationFrameworkController:
         global pitchRateFilteredDict
         global filteredPitchDict
         for segment in segments:
-            request_list = list(set((map(int,segment.node_ids))))
+            node_list = [int(i) for i in segment.node_ids]
             gps_data=GpsController.getGPSDataForSegmentId(segment.id)
             gps_dict=defaultdict(list)
-            results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(request_list)
+            results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(node_list)
             for result in results:
                 AggregationFrameworkController.writeCSVFile(str(segment.id),"anchor_snapshots",AnchorSnapshotsController.getAnchorSnapshotsForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']),result['trip_id'])
                 AggregationFrameworkController.writeCSVFile(str(segment.id),"pitch_rate_filtered",PitchRateFilteredController.getPitchRateFilteredForTripIdAndSystemTime(result['trip_id'],result['max'],result['min']),result['trip_id'])
@@ -29,7 +29,7 @@ class AggregationFrameworkController:
                 nearest_node=NodeController.getSpecificNode(gps.nearest_node)
                 gps_dict[gps.trip_id].append(AggregationFrameworkController.convertGpsToDict(gps,nearest_node))
             AggregationFrameworkController.writeGPSCSVFile(str(segment.id),gps_dict)
-            AggregationFrameworkController.writeCSVFile(str(segment.id),"nodes",AggregationFrameworkController.convertNodesToList(NodeController.getMultipleNodes(request_list))) 
+            AggregationFrameworkController.writeCSVFile(str(segment.id),"nodes",AggregationFrameworkController.convertNodesToList(NodeController.getMultipleNodes(node_list))) 
         return 'Files created'
     
     
@@ -75,9 +75,9 @@ class AggregationFrameworkController:
         nodesList=[]
         for node in nodes:
             nodeDict={}
-            nodeDict['node_id']=node.node_id
-            nodeDict['latitude']=node.location['coordinates'][0]
-            nodeDict['longtitude']=node.location['coordinates'][1]
+            nodeDict['node_id']=node['node_id']
+            nodeDict['latitude']=node['location']['coordinates'][0]
+            nodeDict['longtitude']=node['location']['coordinates'][1]
             nodesList.append(nodeDict)
         return nodesList   
     
