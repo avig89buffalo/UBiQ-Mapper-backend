@@ -22,9 +22,10 @@ class NodeController:
         return nodes
 
     def getMultipleNodes(ids):
-        raw_query = {'node_id': {'$in': ids }}
-        nodes = Nodes.objects(__raw__=raw_query)
-        return nodes
+        pipeline = [{'$match': {'node_id': {'$in': ids}}}, 
+                    {'$addFields': {'__ids': {'$indexOfArray': [ids, '$node_id']}}}, 
+                    {'$sort': {'__ids': 1}}]
+        return Nodes._get_collection().aggregate(pipeline)
         
     def updateNodeSegment(body):
         node_ids = [x['node_id'] for x in body]
@@ -50,8 +51,7 @@ class NodeController:
         node_ids = body['node_ids']
         print('Inside updateIntersectingNodes ',node_ids)
         node_ids = {'node_id': {'$in': node_ids }}
-        nodes = Nodes.objects(__raw__=node_ids).update(intersecting_node = True)
-        return nodes
+        return Nodes.objects(__raw__=node_ids).update(intersecting_node = True)
     
     def getIntersectingNodes(ids):
         raw_query = {'node_id': {'$in': ids },
