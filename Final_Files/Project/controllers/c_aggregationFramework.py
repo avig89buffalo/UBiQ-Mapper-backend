@@ -73,13 +73,17 @@ class AggregationFrameworkController:
 
     @staticmethod
     def convertNodesToList(nodes):
+        global node_id_list
+        node_id_list=[]
         nodesList=[]
         for node in nodes:
-            nodeDict={}
-            nodeDict['node_id']=node['node_id']
-            nodeDict['latitude']=node['location']['coordinates'][0]
-            nodeDict['longtitude']=node['location']['coordinates'][1]
-            nodesList.append(nodeDict)
+            if node['node_id'] not in node_id_list:
+                nodeDict={}
+                nodeDict['node_id']=node['node_id']
+                node_id_list.append(node['node_id'])
+                nodeDict['latitude']=node['location']['coordinates'][0]
+                nodeDict['longtitude']=node['location']['coordinates'][1]
+                nodesList.append(nodeDict)
         return nodesList   
     
     @staticmethod
