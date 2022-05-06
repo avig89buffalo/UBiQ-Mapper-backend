@@ -18,6 +18,7 @@ class AggregationFrameworkController:
         global filteredPitchDict
         for segment in segments:
             node_list = [int(i) for i in segment.node_ids]
+            node_list= list(dict.fromkeys(node_list))
             gps_data=GpsController.getGPSDataForSegmentId(segment.id)
             gps_dict=defaultdict(list)
             results=GpsController.getMaxAndMinSystemTimestampForDistinctTripIdInNodeList(node_list)
