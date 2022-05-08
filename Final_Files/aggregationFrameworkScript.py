@@ -9,7 +9,7 @@ from geopy.distance import geodesic
 import requests
 
 #import constants
-WEB_CONFIG = 'http://127.0.0.1:5002'
+WEB_CONFIG = 'http://127.0.0.1:5001'
 debug = True
 
 def process_seg_gps(segment_id,df_gps, df_osm):
@@ -26,80 +26,80 @@ def process_seg_gps(segment_id,df_gps, df_osm):
     num_rows_gps, num_cols_gps = df_gps.values.shape
     gps_data = df_gps.values
 
-    if num_rows_osm < 2:
-        bre = 0
+    # if num_rows_osm < 2:
+    #     bre = 0
+    #     return None
+    # else:
+
+    if len(gps_data) < 2:
         return None
     else:
+        vel_og = gps_data[:, 7]
 
-        if len(gps_data) <= 4:
-            return None
-        else:
-            vel_og = gps_data[:, 7]
+        # Discard data where the car is stationary
+        #if (np.count_nonzero(vel_og == 0) > 5):
+            #   return None
+        #else:
 
-            # Discard data where the car is stationary
-            #if (np.count_nonzero(vel_og == 0) > 5):
-             #   return None
-            #else:
+        sys_t_og = gps_data[:, 2]
+        t_og = (gps_data[:, 1] - gps_data[0, 1]) / 1000
+        coor_og = gps_data[:, [3, 4]]
 
-            sys_t_og = gps_data[:, 2]
-            t_og = (gps_data[:, 1] - gps_data[0, 1]) / 1000
-            coor_og = gps_data[:, [3, 4]]
+        map_matched_lat = gps_data[:, 5].astype('float64')
+        map_matched_lon = gps_data[:, 6].astype('float64')
+        alt = np.zeros(len(map_matched_lat), )
 
-            map_matched_lat = gps_data[:, 5].astype('float64')
-            map_matched_lon = gps_data[:, 6].astype('float64')
-            alt = np.zeros(len(map_matched_lat), )
+        map_matched_coor = gps_data[:, [5, 6]]
 
-            map_matched_coor = gps_data[:, [5, 6]]
-
-            #x_ecef, y_ecef, z_ecef = lla_to_ecef_1(np.deg2rad(map_matched_lat), np.deg2rad(map_matched_lon), alt)
+        #x_ecef, y_ecef, z_ecef = lla_to_ecef_1(np.deg2rad(map_matched_lat), np.deg2rad(map_matched_lon), alt)
 
 
-            # fig, (ax1) = plt.subplots(1)
-            # ax1.plot(map_matched_lat, map_matched_lon, label="WGS")
-            # # ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
-            # # ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
-            # # ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
-            # ax1.legend(loc="upper left")
-            # ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
+        # fig, (ax1) = plt.subplots(1)
+        # ax1.plot(map_matched_lat, map_matched_lon, label="WGS")
+        # # ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
+        # # ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
+        # # ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
+        # ax1.legend(loc="upper left")
+        # ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
 
-            # fig, (ax1) = plt.subplots(1)
-            # ax1.plot(x_ecef, y_ecef, label="ecef")
-            # # ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
-            # # ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
-            # # ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
-            # ax1.legend(loc="upper left")
-            # ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
+        # fig, (ax1) = plt.subplots(1)
+        # ax1.plot(x_ecef, y_ecef, label="ecef")
+        # # ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
+        # # ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
+        # # ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
+        # ax1.legend(loc="upper left")
+        # ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
 
 
-            acc = gps_data[:, 8]
-            bearing_og = gps_data[:, 9]
+        acc = gps_data[:, 8]
+        bearing_og = gps_data[:, 9]
 
-            dist_vec = get_trip_dist_vec(t_og, vel_og)
+        dist_vec = get_trip_dist_vec(t_og, vel_og)
 
-            fig, (ax1) = plt.subplots(1)
-            ax1.plot(t_og, vel_og, label="Vel")
-            # ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
-            # ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
-            # ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
-            ax1.legend(loc="upper left")
-            ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
+        fig, (ax1) = plt.subplots(1)
+        ax1.plot(t_og, vel_og, label="Vel")
+        # ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
+        # ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
+        # ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
+        ax1.legend(loc="upper left")
+        ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
 
-            fig, (ax1) = plt.subplots(1)
-            ax1.plot(dist_vec, vel_og, label="Vel")
-            #ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
-            #ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
-            #ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
-            ax1.legend(loc="upper left")
-            ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
+        fig, (ax1) = plt.subplots(1)
+        ax1.plot(dist_vec, vel_og, label="Vel")
+        #ax1.plot(acc_data[:, 1]/1000, calibrated_acc[:, 0], label="Calib-Acc")
+        #ax1.plot(gps_data[:, 0], smooth_butter(gps_data[:, 5], constants.GPS_ACC_SMOO_PARA, 2, 'lowpass'), label="GPS-ACC")
+        #ax1.plot(gps_data[:, 1]/1000, gps_data[:, 5], label="GPS-ACC")
+        ax1.legend(loc="upper left")
+        ax1.set(xlabel='Time (s)', ylabel='Raw Acc (m/s)')
 
-            #Get the velocity data in format
+        #Get the velocity data in format
 
-            seg_velocity_data = np.hstack((np.reshape(dist_vec, (len(dist_vec), 1)), np.reshape(map_matched_coor, (len(map_matched_coor), 2)),np.reshape(vel_og, (len(vel_og), 1))))
-            # print(seg_velocity_data)
-            for row in seg_velocity_data:
-                response = requests.post(WEB_CONFIG+'/segmentElevation/createSegmentElevationsFromAggregation', json = {"segment_id": segment_id,"distance": row[0], "latitude": row[1], "longitude": row[2], "elevation": row[3]/8})
+        seg_velocity_data = np.hstack((np.reshape(dist_vec, (len(dist_vec), 1)), np.reshape(map_matched_coor, (len(map_matched_coor), 2)),np.reshape(vel_og, (len(vel_og), 1))))
+        # print(seg_velocity_data)
+        for row in seg_velocity_data:
+            response = requests.post(WEB_CONFIG+'/segmentElevation/createSegmentElevationsFromAggregation', json = {"segment_id": segment_id,"distance": row[0], "latitude": row[1], "longitude": row[2], "elevation": row[3]/8})
 
-            #d = geodesic(coor_og[0, :], coor_og[1, :]).meters
+        #d = geodesic(coor_og[0, :], coor_og[1, :]).meters
 
     return seg_velocity_data
 
@@ -133,7 +133,8 @@ def lla_to_ecef_1(lat, lon, alt):
 
 def process_seg_data(path: str, files, folders):
     if debug:
-        segment_id = path.split('/')[-1]
+        segment_id = path.split('\\')[-1]
+        print("SegmentID:",segment_id)
         print("process data: %s" % path)
 
 
@@ -155,18 +156,19 @@ def process_seg_data(path: str, files, folders):
         trip_name = os.path.basename(trip_fold)
 
         #gps file
-
+        
         gps_file = os.path.join(trip_fold, 'gps.csv')
-        df_gps = pd.read_csv(gps_file, error_bad_lines=False, engine='python', skipfooter=1)
+        if os.path.exists(gps_file):
+            df_gps = pd.read_csv(gps_file, error_bad_lines=False, engine='python', skipfooter=1)
 
-        seg_vel = process_seg_gps(segment_id,df_gps, df_osm)
+            seg_vel = process_seg_gps(segment_id,df_gps, df_osm)
 
-        if seg_vel is None:
-            print("Segment velocity data not available.")
-        else:
-            seg_file_name = trip_name + "_seg_vel.csv"
-            save_path = os.path.join(path, seg_file_name)
-            np.savetxt(save_path, seg_vel, fmt='%10.5f', delimiter=",")
+            if seg_vel is None:
+                print("Segment velocity data not available.")
+            else:
+                seg_file_name = trip_name + "_seg_vel.csv"
+                save_path = os.path.join(path, seg_file_name)
+                np.savetxt(save_path, seg_vel, fmt='%10.5f', delimiter=",")
 
             #seg_len_vec = np.vstack((seg_len_vec, np.reshape(len(seg_vel), (1, 1))))
 

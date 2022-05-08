@@ -19,7 +19,7 @@ def get_flag(x):
         else:
             return False
 
-for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
+for file in glob.glob(r"preprocessedfiles\*.json"):
     print('Processing File Name ', file)
     f = open(file)
     data = json.load(f)
@@ -219,7 +219,7 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
                 for key, item in c_.items():
                     if item > 1:
                         segment_id = key
-                        print("selected segment id: ", segment_id)
+                        # print("selected segment id: ", segment_id)
                         break
                 if start_position == 0:
                     all_map_matched_coordinates.loc[start_position:end_position, 'temp_segment_id'] = segment_id
@@ -299,4 +299,5 @@ for file in glob.glob(r"preprocessedfiles\*.json")[:1]:
     # print({'trip_id': data['path'], 'segments': segments})
     response = requests.post(WEB_CONFIG+'/segment/updateTrip', json= {'trip_id': data['path'], 'segments': segments})
     print('Sending final final data to server')
-    response = requests.get(WEB_CONFIG+'/segments/getSegmentsWithTrips')
+    
+response = requests.get(WEB_CONFIG+'/segments/getSegmentsWithTrips')
