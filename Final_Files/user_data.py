@@ -19,6 +19,7 @@ def get_flag(x):
         else:
             return False
 
+# Loop to iterate through all of the pre-processed files containing user data
 for file in glob.glob(r"preprocessedfiles\*.json"):
     print('Processing File Name ', file)
     f = open(file)
@@ -31,8 +32,10 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
     print("anchor_snapshots: ",len(data['anchor_snapshots']))
     print("pitch_rate_filtered: ",len(data['pitch_rate_filtered']))
 
+    # change the city name accordingly when accessing the data for a different city
     city = 'Buffalo'
 
+    # creating json for database insertion from GPS
     gps_data = []
     gps_processing = []
     for gps in data['gps']:
@@ -54,7 +57,7 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
         })
 
 
-
+    # creating json for database insertion from filtered data
     filtered_pitch_data = []
     for filtered_pitch in data['filtered_pitch']:
         filtered_pitch_data.append({
@@ -64,7 +67,7 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
         })
 
 
-
+    # creating json for database insertion from anchor_snapshots_data
     anchor_snapshots_data = []
     for snapshot in data['anchor_snapshots']:
         anchor_snapshots_data.append({
@@ -74,7 +77,7 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
         })
 
 
-
+    # creating json for database insertion from pitch_rate_filtered_data
     pitch_rate_filtered_data = []
     for pitch_rate in data['pitch_rate_filtered']:
         pitch_rate_filtered_data.append({
@@ -83,6 +86,8 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
             'value': pitch_rate['value']
         })
 
+
+    # Getting map matched data from OSRM Docker image
 
     gps_data_points_all = pd.DataFrame(gps_processing)
     # print(gps_data_points_all)
@@ -157,6 +162,7 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
                 print(results)
 
     # print('Ld', len(Ld))
+    # Curating the final data set for user segmentation
     all_map_matched_coordinates = pd.DataFrame(Ld)
     all_map_matched_coordinates['user_coordinates'] = all_map_matched_coordinates['user_lon'].astype(str)+" , "+all_map_matched_coordinates['user_lat'].astype(str)
     all_map_matched_coordinates['trace_coordinates'] = all_map_matched_coordinates['trace_lon'].astype(str)+" , "+all_map_matched_coordinates['trace_lat'].astype(str)
@@ -185,6 +191,12 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
     all_nodes_set = set(all_map_matched_coordinates['nearest_node_id'])
     response = requests.get(WEB_CONFIG+'/node/getIntersectingNodes', json = {"node_ids": list(all_nodes_set)})
     # print('Response is: ',response.json())
+
+    # Logic for segmenting the user gps data
+    # First get the nearest node for each of the user coordinate
+    # Then get whether the nearsert nodes are intersection nodes or not
+    # User data from first intersecting node ( or start of the file ) till next intersecting node belongs to 1 segment
+    # The segment Id to which the data belongs is the common segment id of both the intersecting nodes
 
     intersecting_nodes = []
     for node in response.json():
@@ -251,6 +263,8 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
 
     trip_nodes = []
     segments = []
+
+    # Creating the data for insertion into the GPS table data
     for gps in data['gps']:
         nearest_node_id = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['nearest_node_id']
         map_matched_coordinate = all_map_matched_coordinates[all_map_matched_coordinates['timestamp'] ==  gps['timestamp']]['trace_coordinates']
@@ -291,6 +305,7 @@ for file in glob.glob(r"preprocessedfiles\*.json"):
         'segment_ids': segments
         }
 
+    #Requests to update the data base with all the user data
     response = requests.post(WEB_CONFIG+'/gps', json = gps_data)
     response = requests.post(WEB_CONFIG+'/filteredPitch', json = filtered_pitch_data)
     response = requests.post(WEB_CONFIG+'/anchorSnapshots', json = anchor_snapshots_data)

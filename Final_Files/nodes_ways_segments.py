@@ -19,10 +19,13 @@ WEB_CONFIG = 'http://127.0.0.1:5002'
 # (-78.8246377, 42.88402366, -78.72325793, 43.0139436)
 # print('before query')
 
+# co-ordinates for the bounding box for which nodes and ways needs to be downloaded
 south = 42.88402366 - 0.02
 west = -78.8246377 + 0.02
 north = 43.0139436 + 0.02
 east = -78.72325793 - 0.02
+
+# city for which the bounding box is being taken
 city = 'Buffalo'
 
 
@@ -30,6 +33,7 @@ way_list = []
 nodes_list = []
 http = urllib3.PoolManager()
 
+# Query to hit the Open Street Map docker image
 q_nodes = "http://172.17.0.2:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 # q_nodes = "http://127.0.0.1:80/api/interpreter?data=[out:json];(node({},{},{},{});<;);out;".format(str(south),str(west),str(north),str(east))
 
@@ -47,6 +51,8 @@ nodes_list = []
 all_road_specific_nodes = {}
 way_list = []
 temp_nodes_list = []
+
+# filtering out road specific data and ways
 for element in result_nodes['elements']:
     if element['type'] == 'way':
         if "tags" in element:
@@ -61,6 +67,7 @@ for element in result_nodes['elements']:
 
 # all_road_specific_nodes = list(set(all_road_specific_nodes))
 
+# Getting the nodes belonging to ways
 for element in result_nodes['elements']:
     if element['type'] == 'node' and element['id'] in all_road_specific_nodes:
             # for sending to database
@@ -83,6 +90,7 @@ print("before sending to DB")
 
 # Add to DB
 
+# API to add way ways and nodes into the database
 response = requests.post(WEB_CONFIG+'/node', json = temp_nodes_list)
 print("node done", response)
 response = requests.post(WEB_CONFIG+'/way', json = way_list)
@@ -118,7 +126,7 @@ list_of_all_lists = lil_matrix((total_nodes,total_nodes))
 # Lets get all the intersections            
 counter = Counter(all_nodes_d)
 
-# 
+# Finding out the nodes which are intersections
 all_intersections = {}
 for element in counter:
     if counter[element] > 1:
@@ -128,10 +136,14 @@ intersection_nodes = []
 for key in all_intersections.keys():
     intersection_nodes.append(int(key))
 
-
+# Update the Node database and set intersecting nodes to true 
 response_intersection = requests.post(WEB_CONFIG+'/node/intersectingNodes', json = {'node_ids': intersection_nodes})
 print("way done", response_intersection)
 
+
+# Creating the ways matrix
+# matrix visualizes the fact that if we go from the coordinate in the row, to the coordinate in the column, its like saying we are going from node1 (row coordinate) to node2(column coordinate). 
+# Ways which have a intersection will have the count of the (row_coordinate, column_coordinate) > 1
 segment_tracker = 0
 for nodes_counter in range(len(ways)):
     # if nodes_counter % 100 == 0:
@@ -152,6 +164,9 @@ for nodes_counter in range(len(ways)):
 
 all_sets = []
 counter = 0
+
+#disecting the matrix data into dataframe so that its easier to deal with
+
 for nodes_counter in range(len(ways)):
     node_ids = set()
     
@@ -174,6 +189,7 @@ for nodes_counter in range(len(ways)):
 
 main_df = pd.DataFrame(all_sets)
 
+#Get lat long for the node Ids
 def get_lat(x):
     try:
         return nodes['latitude'][x]
@@ -201,6 +217,9 @@ main_df['node2_lat_lon'] = "(" + main_df['node2_lat'] +"," + main_df['node2_lon'
 list1 = []
 current_seg = 'na'
 dict_temp = {'segment_id':'','lat_lon':[]}
+
+# here we are creating a dataframe wrt nodes in a segment
+# till now we were dealing with way specific data here we have now started dealing with segment specific data
 for row in main_df.itertuples():
     # print(row)
     if row.segment_id != current_seg:
@@ -238,6 +257,8 @@ for seg in segments:
     all_segments.append({'node_ids': list(seg)})
 
 # print(all_segments)
+
+# API to add the segments to the database
 print("segment done")
 response = requests.post(WEB_CONFIG+'/segment', json = all_segments)
 print("Segment DB done", response)
@@ -252,6 +273,7 @@ for seg in segments_data:
     for node in node_ids:
         update_nodes.append({'node_id': node, 'segment_id': segment_id})
 
+# API to add node segment mapping to the database
 print("Before sending")
 response = requests.post(WEB_CONFIG+'/nodeSegmentMapping', json = update_nodes)
 print("after updating")
